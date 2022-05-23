@@ -1,1 +1,1 @@
-# mYuMi_micro-ROS
+# micro-ROS in ABB's mobile YuMi prototype (mYuMi)
