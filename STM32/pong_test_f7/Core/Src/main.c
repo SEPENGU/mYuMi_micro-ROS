@@ -163,7 +163,7 @@ int main(void) {
     SystemClock_Config();
 
     /* USER CODE BEGIN SysInit */
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
     // vTraceEnable(TRC_START);
     vTraceEnable(TRC_INIT);
 #endif
@@ -423,7 +423,7 @@ servo_t servo;
 #define ANGLE_MAX 90
 
 int state;
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
 traceString chnState;
 #endif
 
@@ -444,7 +444,7 @@ void ping_sub_callback(const void *msgin) {
 
     // printf("Ping data: %s\r\n", msg_header.frame_id.data);
     state = 1;
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
     vTracePrintF(chnState, "%d", state);
 #endif
     // HAL_GPIO_WritePin(BLINK_GPIO_Port, BLINK_Pin, state);
@@ -459,7 +459,7 @@ void peng_sub_callback(const void *msgin) {
     const std_msgs__msg__Header *msg = (const std_msgs__msg__Header *)msgin;
     if (msg_header.stamp.sec == msg->stamp.sec && msg_header.stamp.nanosec == msg->stamp.nanosec) {
         state = 0;
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
         vTracePrintF(chnState, "%d", state);
 #endif
         // HAL_GPIO_WritePin(BLINK_GPIO_Port, BLINK_Pin, state);
@@ -469,7 +469,7 @@ void peng_sub_callback(const void *msgin) {
         // printf("Peng data: %s, RTT: %fs\r\n", msg->frame_id.data, RTT);
     } else {
         state = 0.5;
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
         vTracePrintF(chnState, "%d", state);
 #endif
         // HAL_GPIO_WritePin(BLINK_GPIO_Port, BLINK_Pin, 0);
@@ -501,7 +501,7 @@ void StartDefaultTask(void *argument) {
     Servo_Init(&servo, &htim2, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 
-#ifdef TRC_CFG_RECORDER_MODE
+#ifdef CONFIG_PERCEPIO_TRACERECORDER_ENABLED
     chnState = xTraceRegisterString("state");
 #endif
 
