@@ -12,7 +12,7 @@ Note: Check first if your board is [supported](https://github.com/micro-ROS/micr
 
 1. Download and install [Arduino IDE](https://www.arduino.cc/en/software).
 2. Clone the Galactic version of the [micro-ROS library](https://github.com/micro-ROS/micro_ros_arduino.git).
-3. Include the micro-ROS library in Arduino IDE.
+3. Include the library in Arduino IDE.
 4. Patch Arduino board by replacing `platform.txt`:\
     4.1. Teensyduino:
     ```bash
@@ -29,6 +29,7 @@ Note: Check first if your board is [supported](https://github.com/micro-ROS/micr
 5. Copy the code from the `main.cpp` file, from one of the projects in this folder (Arduino), and paste it into an Arduino sketch.
 6. Download the board packages if it doesn't exist and select it (and specify port).
 7. Build and flash the project.
+8. Start and connect the [Agent](../Agent.md).
 
 ### PlatformIO
 

@@ -1,8 +1,8 @@
 # MICRO-ROS FOR MOBILE ROBOTICS SYSTEMS
 
-Project to put micro-ROS into ABB's mobile YuMi platform (mYuMi), conducted as a 30 hp master's thesis for Mälardalen University.\
+Project to put micro-ROS into ABB's mobile YuMi platform (mYuMi), conducted as a 30 hp master's thesis for Mälardalen University.
 
-This is the guide on how to set up the full system with mYuMi.\
+This is the guide on how to set up the full system with mYuMi.
 
 The micro-ROS setup guides for integration into external tools can be read as standalone for extra help on top of the already existing micro-ROS guides.
 

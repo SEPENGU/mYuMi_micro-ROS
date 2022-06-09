@@ -33,6 +33,8 @@ WARNING: Do not download the ESP-IDF prerequisites, this guide will not work if 
     idf.py monitor
     ```
 
+6. Start and connect the [Agent](../Agent.md).
+
 ### Troubleshoot
 
 TODO

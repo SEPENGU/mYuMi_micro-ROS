@@ -6,11 +6,11 @@ Tested with NUCLEO-F767ZI.
 
 ## Setup
 
-If you want to create a project from scratch or use another board, follow the [STM32Cube guide](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/blob/galactic/README.md) or the [RTOS guide](https://micro.ros.org/docs/tutorials/core/first_application_rtos/) if your board is [supported](https://micro.ros.org/docs/overview/hardware/).
+If you want to create a project from scratch or use another board, follow the [STM32Cube guide](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/blob/galactic/README.md), or the [RTOS guide](https://micro.ros.org/docs/tutorials/core/first_application_rtos/) if your board is [supported](https://micro.ros.org/docs/overview/hardware/).
 
 1. Download and install [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html).
 2. Put one of the projects in this folder (STM32) inside the STM32CubeIDE project folder (STM32CubeIDE has to be opened once for it to exist).
-3. Clone the Galactic version of the [micro-ROS utilities](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/tree/galactic) at the root of this folder.
+3. Clone the Galactic version of the [micro-ROS utilities](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/tree/galactic) at the root of the selected project.
 4. Open up STM32CubeIDE and import this project into the workspace.
 5. Try building the project. If it doesn't work, continue with the next steps.
 6. Go to `Project -> Settings -> C/C++ Build -> Settings -> Build Steps Tab` and in `Pre-build steps` add:
@@ -34,6 +34,7 @@ If you want to create a project from scratch or use another board, follow the [S
       - `microros_transports/dma_transport.c`
 
 10. Build and run the project.
+11. Start and connect the [Agent](../Agent.md).
 
 ### Troubleshoot
 
