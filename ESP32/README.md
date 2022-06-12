@@ -14,9 +14,10 @@ WARNING: Do not download the ESP-IDF prerequisites, this guide will not work if 
     ```bash
     pip3 install catkin_pkg lark-parser empy colcon-common-extensions importlib-resources
     ```
-3. Open up one of the two projects inside this folder (ESP32).
-4. Clone the Galactic version of the [micro-ROS component](https://github.com/micro-ROS/micro_ros_espidf_component/tree/galactic) into the components folder.
-5. Put the terminal at the root of the project and run the following commands:
+3. To start with a micro-ROS ESP-IDF project, either use one of the [examples](https://github.com/micro-ROS/micro_ros_espidf_component/tree/galactic/examples) included in the component or use one of the projects in this folder (ESP32).
+
+4. Create a folder named "components" at the root of the project if it doesn't already exist, and inside it, clone the Galactic version of the [micro-ROS component](https://github.com/micro-ROS/micro_ros_espidf_component/tree/galactic).
+5. Put a terminal at the root of the project and run the following commands:
 
     ```bash
     # ESP-IDF environment variables must be exported first
