@@ -184,8 +184,8 @@ void micro_ros_task(void* arg) {
     rmw_init_options_t* rmw_options = rcl_init_options_get_rmw_init_options(&init_options);
 
     // Static Agent IP and port can be used instead of autodiscovery.
-    // RCCHECK(rmw_uros_options_set_udp_address(CONFIG_MICRO_ROS_AGENT_IP, CONFIG_MICRO_ROS_AGENT_PORT, rmw_options));
-    RCCHECK(rmw_uros_options_set_udp_address("192.168.0.130", "8888", rmw_options));  // 192.168.0.143
+    RCCHECK(rmw_uros_options_set_udp_address(CONFIG_MICRO_ROS_AGENT_IP, CONFIG_MICRO_ROS_AGENT_PORT, rmw_options));
+    // RCCHECK(rmw_uros_options_set_udp_address("192.168.0.111", "8888", rmw_options));  // Manual
 #endif
 #else
     while (RMW_RET_OK != rmw_uros_ping_agent(1000, 1))

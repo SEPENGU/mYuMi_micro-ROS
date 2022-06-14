@@ -17,7 +17,7 @@ def generate_launch_description():
             output='screen',
             emulate_tty=True,
             arguments=['multiserial', '--devs',
-                       "/dev/virtualcom0 /dev/virtualcom1", 'v6']
+                       "/dev/virtualcom0 /dev/virtualcom1"]
         ),
         Node(
             package='micro_ros_agent',
@@ -25,6 +25,6 @@ def generate_launch_description():
             name='micro_ros_agent',
             output='screen',
             emulate_tty=True,
-            arguments=['udp4', '--port', '8888', 'v6']
+            arguments=['udp4', '--port', '8888', '-v6']
         )
     ])
