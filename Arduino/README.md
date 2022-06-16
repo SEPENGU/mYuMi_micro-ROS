@@ -11,27 +11,28 @@ Note: Check first if your board is [supported](https://github.com/micro-ROS/micr
 ### Arduino IDE
 
 1. Download and install [Arduino IDE](https://www.arduino.cc/en/software).
-2. Clone the Galactic version of the [micro-ROS library](https://github.com/micro-ROS/micro_ros_arduino.git).
-3. Include the library in Arduino IDE.
-4. Patch Arduino board by replacing `platform.txt`:\
-    4.1. Teensyduino:
+2. Clone the Galactic version of the [micro-ROS library](https://github.com/micro-ROS/micro_ros_arduino.git) inside your Arduino libraries folder, or download it as a ZIP and use the `Add .ZIP library` function in the IDE.
+3. If any of the following boards are used, patch them by replacing `platform.txt`:
+
+    4.1. SAMD boards:
     ```bash
-    export ARDUINO_PATH=[Your Arduino + Teensiduino path]
-    cd $ARDUINO_PATH/hardware/teensy/avr/
-    curl https://raw.githubusercontent.com/micro-ROS/micro_ros_arduino/main/extras/patching_boards/platform_teensy.txt > platform.txt
-    ```
-    4.2. SAMD:
-    ```bash
-    export ARDUINO_PATH=[Your Arduino path]
-    cd $ARDUINO_PATH/hardware/sam/1.6.12/
+    # Locate your terminal at ../hardware/sam/1.6.12/ in your Arduino installation
     curl https://raw.githubusercontent.com/micro-ROS/micro_ros_arduino/main/extras/patching_boards/platform_arduinocore_sam.txt > platform.txt
     ```
-5. To create a project, either use one of the [examples](https://github.com/micro-ROS/micro_ros_arduino/tree/galactic/examples) included in the library, use one of the projects in this folder (Arduino), or include the following example code for publishers and subscribers, in a sketch:
 
-```Arduino
-// Standard libraries
+    4.2. Teensyduino boards:
+    ```bash
+    # Locate your terminal at ../hardware/teensy/avr/ in your Arduino installation
+    curl https://raw.githubusercontent.com/micro-ROS/micro_ros_arduino/main/extras/patching_boards/platform_teensy.txt > platform.txt
+    ```
 
+4. To create a project, either use one of the [examples](https://github.com/micro-ROS/micro_ros_arduino/tree/galactic/examples) included in the library, use one of the projects in this folder (Arduino), or include the following example code for publishers and subscribers, in a sketch:
+
+```C
 #include <Arduino.h>
+
+// Standard micro-ROS libraries
+
 #include <micro_ros_arduino.h>
 #include <rcl/error_handling.h>
 #include <rcl/rcl.h>
@@ -50,7 +51,7 @@ rclc_executor_t executor;
 
 rcl_publisher_t publisher;
 rcl_subscription_t subscriber;
-rcl_timer_t timer; // 
+rcl_timer_t timer;
 std_msgs__msg__Int32 msg_pub;
 std_msgs__msg__Int32 msg_sub;
 
@@ -64,14 +65,14 @@ void publisher_callback(rcl_timer_t * timer, int64_t last_call_time)
   }
 }
 
-void subscription_callback(const void * msgin)
+void subscriber_callback(const void * msgin)
 {  
   const std_msgs__msg__Int32 * msg = (const std_msgs__msg__Int32 *)msgin;
   printf("Received: %d", msg->data);
 }
 
 void setup() {
-    set_microros_transports();
+    set_microros_transports(); // Serial USB
     // set_microros_wifi_transports("WIFI SSID", "WIFI PASS", "IP", PORT);
     
     allocator = rcl_get_default_allocator();
@@ -97,14 +98,13 @@ void loop() {
 }
 ```
 
-6. Download the packages for your board type if they doesn't exist and select your specific board (and specify port).
-7. Build and flash the project.
-8. Start and connect the [Agent](../Agent.md).
+5. Download the packages for your board type using the Boards Manager and select your specific board (and specify port).\
+  5.1. Follow [this guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) to download packages for ESP32 in Arduino IDE.
+6. Verify and upload the sketch.
+7. Start and connect the [Agent](../Agent.md).
 
 ### PlatformIO
 
 NEW: Official instructions available in separate [PlatformIO repository](https://github.com/micro-ROS/micro_ros_platformio).
 
-### Troubleshoot
-
-TODO
+It's recommended to use PlatformIO together with [VSCode](https://platformio.org/install/ide?install=vscode).

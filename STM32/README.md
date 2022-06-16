@@ -7,9 +7,9 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
 ## Setup
 
 1. Download and install [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html).
-2. Create a new CubeIDE project for your specific board.
+2. Create a new STM32 project for your microcontroller. It's recommended to use the MCU/MPU Selector over the Board Selector, as the Board Selector can introduce hard to find conflicts with USART.
 
-      2.1 If NUCLEO-F767ZI is used, one of the projects in this folder (STM32) can be imported and only step 3 needs to be followed for micro-ROS to work.
+      2.1 If NUCLEO-F767ZI is used, one of the projects in this folder (STM32) can be imported instead and only step 3 needs to be followed for micro-ROS to work.
 
 3. Clone the Galactic version of the [micro-ROS utilities](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/tree/galactic) at the root of the selected project.
 
@@ -17,10 +17,9 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
       
       4.1. Go to `Project -> Settings -> C/C++ Build -> Settings -> Build Steps Tab` and in `Pre-build steps` add:
 
-    ```bash
-    docker pull microros/micro_ros_static_library_builder:galactic && docker run --rm -v ${workspace_loc:/${ProjName}}:/project --env 
-    MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils/microros_static_library_ide microros/micro_ros_static_library_builder:galactic
-    ```
+      ```bash
+      docker pull microros/micro_ros_static_library_builder:galactic &&  docker run --rm -v ${workspace_loc:/${ProjName}}:/project --env MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils microros_static_library_ide microros/micro_ros_static_library_builder:galactic
+      ```
 
       4.2. Add the micro-ROS include directory to the project:\
       In `Project -> Settings -> C/C++ Build -> Settings -> Tool Settings Tab -> MCU GCC Compiler -> Include paths` add 
@@ -28,26 +27,34 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
 
       4.3. Add the micro-ROS precompiled library to the project:\
       In `Project -> Settings -> C/C++ Build -> Settings -> MCU GCC Linker -> Libraries`,
-      - add `<ABSOLUTE_PATH_TO>/micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros` in `Library search path (-L)`,
+      - add `../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros` in `Library search path (-L)`,
       - add `microros` in `Libraries (-l)`.
 
-5. Add the following source code files from `extra_sources/` to `Core/Src/`:
+5. Configure the following IOC settings:
+
+      5.1. Enable FreeRTOS and create a task with enough stack size for micro-ROS (at least 200 words).
+      - Enable `FREERTOS -> Advanced settings -> USE_NEWLIB_REENTRANT`.
+      - Change `SYS -> Timebase Source` to something other than `SysTick` (FreeRTOS requirement).
+
+      5.2. Configure USART as the transport layer:
+
+      - Enable USART in your STM32CubeMX. If you plan on using UART via the built-in USB port, make sure you're selecting the correct USART (check the user manual for your board).
+
+      - For the selected USART, enable `global interrupt` under `NVIC Settings`.
+
+      - USART with DMA (recommended, skip this step for USART with interrupts):
+            
+            For the selected USART, add DMA for Tx and Rx under `DMA Settings`.
+            Set the DMA priotity to `Very High` for Tx and Rx.
+            Set the DMA mode to `Circular` for Rx.
+      
+      5.3 Make sure you save the IOC settings and generate code.
+
+7. Add the following source code files from `extra_sources/` to `Core/Src/`:
       - `microros_time.c`
       - `microros_allocators.c`
       - `custom_memory_manager.c`
       - From `microros_transports/`, add either `dma_transport.c` for USART with DMA (recommended), or `it_transport.c` for USART with interrupts.
-
-6. Create a FreeRTOS task with enough stack size for micro-ROS (at least 200 words).
-7. Configure USART as the transport layer:
-
-      6.1. Enable USART in your STM32CubeMX. If you plan on using UART via the built-in USB port, make sure you're selecting the correct USART (check the user manual for your board).
-
-      6.2. For the selected USART, enable `global interrupt` under `NVIC Settings`.
-
-      6.3. USART with DMA (recommended, skip this step for USART with interrupts):
-      - For the selected USART, enable DMA for Tx and Rx under `DMA Settings`
-      - Set the DMA priotity to `Very High` for Tx and Rx
-      - Set the DMA mode to `Circular` for Rx
 
 8. To start with micro-ROS in STM32Cube, look at either [`sample_main.c`](https://github.com/micro-ROS/micro_ros_stm32cubemx_utils/blob/galactic/sample_main.c) in the utilities, one of the projects in this folder (STM32), or the following example:
 
@@ -55,6 +62,7 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
 .
 .
 .
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
@@ -62,7 +70,7 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-// Standard libraries
+// Standard micro-ROS libraries
 
 #include <rcl/rcl.h>
 #include <rcl/error_handling.h>
@@ -75,10 +83,20 @@ Tested with NUCLEO-F767ZI and STM32F3DISCOVERY.
 #include <std_msgs/msg/int32.h>  // Example message type for topics
 
 /* USER CODE END Includes */
+
 .
 .
 .
+
 /* USER CODE BEGIN 4 */
+
+// Example declarations for topic communication
+
+rcl_publisher_t publisher;
+rcl_subscription_t subscriber;
+rcl_timer_t timer;
+std_msgs__msg__Int32 msg_pub;
+std_msgs__msg__Int32 msg_sub;
 
 void publisher_callback(rcl_timer_t * timer, int64_t last_call_time)
 {  
@@ -89,10 +107,10 @@ void publisher_callback(rcl_timer_t * timer, int64_t last_call_time)
   }
 }
 
-void subscription_callback(const void * msgin)
+void subscriber_callback(const void * msgin)
 {  
   const std_msgs__msg__Int32 * msg = (const std_msgs__msg__Int32 *)msgin;
-  printf("Received: %d", msg->data);
+  printf("Received: %ld", msg->data);
 }
 
 /* USER CODE END 4 */
@@ -119,14 +137,6 @@ rclc_support_t support;
 rcl_node_t node;
 rclc_executor_t executor;
 
-// Example declarations for topic communication
-
-rcl_publisher_t publisher;
-rcl_subscription_t subscriber;
-rcl_timer_t timer;
-std_msgs__msg__Int32 msg_pub;
-std_msgs__msg__Int32 msg_sub;
-
 /**
   * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used
@@ -136,6 +146,8 @@ std_msgs__msg__Int32 msg_sub;
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+
+  // Allocation
 
   rmw_uros_set_custom_transport(
     true,
@@ -155,7 +167,7 @@ void StartDefaultTask(void *argument)
       printf("Error on default allocators (line %d)\n", __LINE__); 
   }
 
-  // micro-ROS app
+  // micro-ROS
 
   allocator = rcl_get_default_allocator();
 
@@ -178,7 +190,8 @@ void StartDefaultTask(void *argument)
     osDelay(100);
   }
 
-  // free resources
+  // Free resources
+
   rcl_publisher_fini(&publisher, &node);
   rcl_subscription_fini(&subscriber, &node);
   rcl_node_fini(&node);
@@ -187,6 +200,7 @@ void StartDefaultTask(void *argument)
 
   /* USER CODE END 5 */
 }
+
 .
 .
 .
@@ -197,4 +211,8 @@ void StartDefaultTask(void *argument)
 
 ### Troubleshoot
 
-TODO
+* If the Docker build steps fail, make sure the specified paths in the project settings are correct. If it still doesn't work, try using absolute paths.
+* In order to verify that USART is configured correctly with the built-in USB port, make `printf()` display in a serial monitor. Use this only for testing, as micro-ROS will encounter problems if the same USART is used for printing and micro-ROS.
+* If the board is unable to find the Agent, try starting a serial monitor before or while searching and see if it connects.
+* If there are errors in `microros_time.c`, try including `task.h`.
+* If the code gets stuck in `ErrorDefaultHandler` when debugging, you need to allocate more memory for the FreeRTOS task. If it instead gets stuck in `osKernelStart`, you instead need to allocate less memory as the board cannot handle it.

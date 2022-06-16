@@ -1,21 +1,18 @@
 # micro-ROS Agent
 
-Guide on how to set up and use the micro-ROS Agent to connect micro-ROS nodes with the ROS2 network.
-
-## How it works
+Guide on how to set up and use the micro-ROS Agent to connect micro-ROS nodes with the ROS2 network, based on the [micro_ros_setup guide](https://github.com/micro-ROS/micro_ros_setup/blob/galactic/README.md) by micro-ROS.
 
 ## Setup
 
 The Agent can be set up in either ROS2 or Docker. With ROS2 it's compatible with launch files and doesn't struggle with permissions, while Docker doesn't take as much time to set up and is easier to start and test with.
 
 ### ROS2
-Info based on [micro_ros_setup](https://github.com/micro-ROS/micro_ros_setup/blob/galactic/README.md).
 
 1. Clone the `micro_ros_setup` repository inside `src` of your ROS2 workspace:
     ```bash
     git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git
     ```
-2. Build the workspace with `colcon`.
+2. Build the workspace with `colcon build`.
 3. Run the following commands to download and build the agent:
     ```bash
     ros2 run micro_ros_setup create_agent_ws.sh
@@ -40,7 +37,3 @@ Info based on [micro_ros_setup](https://github.com/micro-ROS/micro_ros_setup/blo
     docker run -it --rm --net=host microros/micro-ros-agent:galactic serial --dev /dev/ttyUSB0 -v6
     docker run -it --rm --net=host microros/micro-ros-agent:galactic udp4 --port 8888 -v6
     ```
-
-### Troubleshoot
-
-TODO
