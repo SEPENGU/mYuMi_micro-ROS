@@ -10,7 +10,7 @@ WARNING: Do not download the ESP-IDF prerequisites, this guide will not work if 
 
 1. Clone [ESP-IDF v4.3](https://github.com/espressif/esp-idf/tree/release/v4.3) and run `install.sh` to install dependencies.\
     1.1. (Optional) Create an alias to run `export.sh`.
-2. Export the environment variables by running `export.sh` inside ESP-IDF in a terminal, and then install packages inside the environment for micro-ROS with:
+2. Export the environment variables by running `export.sh` in a terminal inside the ESP-IDF folder, and then install packages inside the environment for micro-ROS with:
     ```bash
     pip3 install catkin_pkg lark-parser empy colcon-common-extensions importlib-resources
     ```
@@ -147,7 +147,7 @@ void app_main(void) {
 
     5.1. Instead of using the terminal to build and flash the project, it can be done inside [Eclipse](https://www.eclipse.org/downloads/packages/release/2021-06/r/eclipse-ide-cc-developers) by using the [ESP-IDF Eclipse Plugin](https://github.com/espressif/idf-eclipse-plugin).
 
-6. Start and connect the [Agent](../Agent.md).
+6. [Start and connect the Agent](../Agent.md).
 
 ### Troubleshoot
 

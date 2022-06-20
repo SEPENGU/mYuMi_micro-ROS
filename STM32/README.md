@@ -207,7 +207,7 @@ void StartDefaultTask(void *argument)
 ```
 
 6. Build and run the project.
-7. Start and connect the [Agent](../Agent.md).
+7. [Start and connect the Agent](../Agent.md).
 
 ### Troubleshoot
 

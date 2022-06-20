@@ -101,7 +101,7 @@ void loop() {
 5. Download the packages for your board type using the Boards Manager and select your specific board (and specify port).\
   5.1. Follow [this guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html) to download packages for ESP32 in Arduino IDE.
 6. Verify and upload the sketch.
-7. Start and connect the [Agent](../Agent.md).
+7. [Start and connect the Agent](../Agent.md).
 
 ### PlatformIO
 
